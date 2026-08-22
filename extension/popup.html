@@ -18,51 +18,25 @@
     .stats { font-size: 11px; color: #71717a; margin-top: 4px; }
     .footer { margin-top: 10px; border-top: 1px solid #27272a; padding-top: 8px; font-size: 11px; color: #a1a1aa; display: flex; justify-content: space-between; }
     a { color: #60a5fa; text-decoration: none; }
-  </style>
+
+    :where(a, button, input, textarea, select):focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
+</style>
 </head>
 <body>
   <h1><span>Hmac Gen</span> <span class="badge">100% Offline</span></h1>
   <textarea id="input" placeholder="Paste input here..."></textarea>
   <div class="btn-row">
-    <button id="btn-run">Process</button>
-    <button id="btn-sample" class="secondary">Sample</button>
-    <button id="btn-copy" class="secondary">Copy</button>
+    <button type="button" id="btn-run">Process</button>
+    <button type="button" id="btn-sample" class="secondary">Sample</button>
+    <button type="button" id="btn-copy" class="secondary">Copy</button>
   </div>
   <textarea id="output" readonly placeholder="Output appears here..."></textarea>
-  <div id="stats" class="stats">Ready</div>
+  <div id="stats" role="status" aria-live="polite" class="stats">Ready</div>
   <div class="footer">
     <span>Zero tracking, offline</span>
-    <a href="https://cig13zs.github.io/hmac-gen/" target="_blank">Full Web App ↗</a>
+    <a href="https://cig13zs.github.io/hmac-gen/" target="_blank" rel="noopener noreferrer">Full Web App ↗</a>
   </div>
   <script src="core.js"></script>
-  <script>
-    const sample = "{\"event\":\"payment_intent.succeeded\",\"amount\":4900}\n===SECRET===\nwhsec_test_secret_key_88921";
-    
-const inputEl = document.getElementById('input');
-const outputEl = document.getElementById('output');
-const statsEl = document.getElementById('output-stats') || document.getElementById('stats');
-
-async function process() {
-  const parts = inputEl.value.split(/===+SECRET===+/);
-  const message = (parts[0] || '').trim();
-  const secret = (parts[1] || '').trim() || 'default_secret';
-
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
-  const hex = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-  outputEl.value = hex;
-  if (statsEl) statsEl.textContent = 'Computed HMAC-SHA256 signature';
-}
-
-document.getElementById('btn-run').addEventListener('click', process);
-inputEl.addEventListener('input', process);
-document.getElementById('btn-sample').addEventListener('click', () => { inputEl.value = sample; process(); });
-document.getElementById('btn-copy').addEventListener('click', () => { navigator.clipboard.writeText(outputEl.value); alert('Copied HMAC!'); });
-if (document.getElementById('btn-clear')) document.getElementById('btn-clear').addEventListener('click', () => { inputEl.value = ''; outputEl.value = ''; });
-process();
-
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>

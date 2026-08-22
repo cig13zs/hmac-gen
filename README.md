@@ -1,4 +1,4 @@
-# HMAC Generator — HMAC-SHA256 & HMAC-SHA512 Signer Online
+# HMAC Generator | HMAC-SHA256 & HMAC-SHA512 Signer Online
 
 > Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes online. Securely sign API payloads, webhooks, and tokens offline.
 
@@ -10,7 +10,7 @@
 
 ---
 
-## ⚡ Key Features
+## Features
 
 - **100% Client-Side & Offline:** Pure vanilla JavaScript runtime. Zero network uploads, zero telemetry, zero analytics tracking.
 - **Instant Processing:** Zero dependencies or heavy frameworks for ultra-fast, lightweight execution.
@@ -19,13 +19,13 @@
 
 ---
 
-## 📖 How It Works
+## How it works
 
 Provide a message payload and secret key separated by ===SECRET=== to compute cryptographically secure HMAC signatures.
 
 ---
 
-## 🛠️ Offline Chrome Extension Installation
+## Install the extension
 
 1. Download or clone this repository:
    ```bash
@@ -38,7 +38,7 @@ Provide a message payload and secret key separated by ===SECRET=== to compute cr
 
 ---
 
-## 💡 Frequently Asked Questions (FAQ)
+## FAQ
 
 ### Is my data uploaded to any server?
 No. Everything executes locally inside your browser memory or extension sandbox. No telemetry, third-party scripts, or API requests are made.
@@ -53,7 +53,7 @@ const engine = require('./core');
 
 ---
 
-## 📄 License & Author
+## License and support
 
 - **Author:** [jju1s](https://github.com/cig13zs)
 - **License:** [MIT License](LICENSE)
