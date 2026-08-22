@@ -3,8 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hmac Gen — Offline Developer Tool</title>
-  <meta name="description" content="Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes offline.">
+  <title>HMAC Generator — HMAC-SHA256 & HMAC-SHA512 Signer Online</title>
+  <meta name="description" content="Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes online. Securely sign API payloads, webhooks, and tokens offline.">
+  <meta name="keywords" content="hmac generator online, hmac sha256 generator, hmac signature tool, sign webhook payload, hmac sha512 calculator">
+  <meta name="author" content="jju1s">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://cig13zs.github.io/hmac-gen/">
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="HMAC Generator — HMAC-SHA256 & HMAC-SHA512 Signer Online">
+  <meta property="og:description" content="Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes online. Securely sign API payloads, webhooks, and tokens offline.">
+  <meta property="og:url" content="https://cig13zs.github.io/hmac-gen/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="jju1s Developer Tools">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HMAC Generator — HMAC-SHA256 & HMAC-SHA512 Signer Online">
+  <meta name="twitter:description" content="Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes online. Securely sign API payloads, webhooks, and tokens offline.">
+
+  <!-- JSON-LD Structured Data Schema -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Hmac Gen",
+  "url": "https://cig13zs.github.io/hmac-gen/",
+  "description": "Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes online. Securely sign API payloads, webhooks, and tokens offline.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "jju1s",
+    "url": "https://github.com/cig13zs"
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I use Hmac Gen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Provide a message payload and secret key separated by ===SECRET=== to compute cryptographically secure HMAC signatures."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Hmac Gen completely free and private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Hmac Gen runs 100% client-side in your web browser. No data, files, or text are ever sent to any remote server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Hmac Gen offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can install the pre-packaged Chrome Extension version or save this page to your local device to use it offline without internet connectivity."
+      }
+    }
+  ]
+}
+  </script>
+
   <style>
     :root { --bg: #09090b; --card: #18181b; --border: #27272a; --text: #f4f4f5; --text-muted: #a1a1aa; --accent: #3b82f6; --accent-hover: #2563eb; --success: #10b981; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,7 +85,7 @@
     .container { max-width: 960px; width: 100%; margin: 0 auto; flex: 1; }
     header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
     h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
-    p.desc { color: var(--text-muted); font-size: 14px; }
+    p.desc { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
     .badges { display: flex; gap: 8px; align-items: center; }
     .badge { font-size: 12px; background: #18181b; border: 1px solid var(--border); color: var(--success); padding: 4px 10px; border-radius: 9999px; font-weight: 500; }
     .kofi-link { background: #ff5e5b; color: #fff; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px; text-decoration: none; }
@@ -29,12 +102,19 @@
     textarea { width: 100%; height: 340px; background: #09090b; border: 1px solid var(--border); border-radius: 8px; color: #f4f4f5; padding: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.5; resize: vertical; }
     textarea:focus { outline: none; border-color: var(--accent); }
     .info-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+    
+    .seo-content { margin-top: 30px; display: flex; flex-direction: column; gap: 20px; }
+    .seo-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .seo-card h2 { font-size: 16px; margin-bottom: 12px; color: #fff; }
+    .seo-card p, .seo-card li { color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+    .seo-card ul, .seo-card ol { padding-left: 20px; }
+    details { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #09090b; }
+    summary { font-weight: 600; cursor: pointer; color: var(--text); font-size: 14px; }
+    details p { margin-top: 8px; font-size: 13px; color: var(--text-muted); }
+
     footer { border-top: 1px solid var(--border); margin-top: 40px; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; gap: 12px; }
     footer a { color: var(--accent); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
-    .features { margin-top: 30px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    .features h2 { font-size: 16px; margin-bottom: 12px; }
-    .features ul { list-style: inside disc; color: var(--text-muted); font-size: 14px; line-height: 1.8; }
   </style>
 </head>
 <body>
@@ -42,10 +122,10 @@
     <header>
       <div>
         <h1>Hmac Gen</h1>
-        <p class="desc">Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes offline.</p>
+        <p class="desc">Generate HMAC-SHA256 and HMAC-SHA512 message authentication codes online. Securely sign API payloads, webhooks, and tokens offline.</p>
       </div>
       <div class="badges">
-        <span class="badge">100% Offline / Client-Side</span>
+        <span class="badge">100% Client-Side / Offline</span>
         <a href="https://ko-fi.com/jju1s" target="_blank" class="kofi-link">Buy me a coffee</a>
       </div>
     </header>
@@ -61,8 +141,8 @@
         </div>
         <textarea id="input" placeholder="Paste input here..."></textarea>
         <div class="info-bar">
-          <span id="input-stats">0 characters | 0 lines</span>
-          <button id="btn-run">Process Now</button>
+          <span id="input-stats">Ready</span>
+          <button id="btn-run">Process</button>
         </div>
       </div>
 
@@ -80,13 +160,27 @@
       </div>
     </div>
 
-    <div class="features">
-      <h2>Why use this tool?</h2>
-      <ul>
-        <li><strong>100% Private & Offline:</strong> Runs purely in your browser runtime. Zero network uploads.</li>
-        <li><strong>Fast & Zero Dependencies:</strong> Instant processing without bloated bundles.</li>
-        <li><strong>Free & Open Source:</strong> Licensed under MIT. Tip jar: <a href="https://ko-fi.com/jju1s">ko-fi.com/jju1s</a>.</li>
-      </ul>
+    <div class="seo-content">
+      <div class="seo-card">
+        <h2>How It Works</h2>
+        <p>Provide a message payload and secret key separated by ===SECRET=== to compute cryptographically secure HMAC signatures.</p>
+      </div>
+
+      <div class="seo-card">
+        <h2>Frequently Asked Questions</h2>
+        <details open>
+          <summary>Is my data private and secure?</summary>
+          <p>Yes. All operations run 100% inside your local web browser runtime using client-side JavaScript. No text, tokens, code, or personal data are ever uploaded to an external server or cloud service.</p>
+        </details>
+        <details>
+          <summary>Can I run this tool completely offline?</summary>
+          <p>Yes. You can install the packaged Manifest V3 Chrome Extension version from GitHub or save this standalone HTML page locally to use without an internet connection.</p>
+        </details>
+        <details>
+          <summary>Is this tool free and open source?</summary>
+          <p>Yes, all tools are 100% free and licensed under the permissive MIT license. If this tool helped you solve an annoyance, you can support development at <a href="https://ko-fi.com/jju1s" target="_blank">ko-fi.com/jju1s</a>.</p>
+        </details>
+      </div>
     </div>
 
     <footer>
@@ -98,7 +192,7 @@
   <script src="core.js"></script>
   <script>
     const sample = "{\"event\":\"payment_intent.succeeded\",\"amount\":4900}\n===SECRET===\nwhsec_test_secret_key_88921";
-    
+        
 const inputEl = document.getElementById('input');
 const outputEl = document.getElementById('output');
 const statsEl = document.getElementById('output-stats') || document.getElementById('stats');
@@ -124,6 +218,7 @@ document.getElementById('btn-copy').addEventListener('click', () => { navigator.
 if (document.getElementById('btn-clear')) document.getElementById('btn-clear').addEventListener('click', () => { inputEl.value = ''; outputEl.value = ''; });
 process();
 
+  
   </script>
 </body>
 </html>

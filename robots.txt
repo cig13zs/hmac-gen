@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cig13zs.github.io/hmac-gen/sitemap.xml
