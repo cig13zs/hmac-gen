@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hmac Gen</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 14px; width: 380px; background: #121214; color: #e4e4e7; font-size: 13px; }
+    h1 { font-size: 15px; margin: 0 0 10px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
+    .badge { font-size: 10px; background: #27272a; color: #10b981; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+    textarea { width: 100%; box-sizing: border-box; height: 110px; background: #18181b; border: 1px solid #27272a; border-radius: 6px; color: #f4f4f5; padding: 8px; font-family: ui-monospace, monospace; font-size: 11px; resize: vertical; margin-bottom: 8px; }
+    textarea:focus { outline: none; border-color: #3b82f6; }
+    .btn-row { display: flex; gap: 6px; margin-bottom: 8px; }
+    button { flex: 1; background: #2563eb; color: #fff; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    button.secondary { background: #27272a; color: #d4d4d8; }
+    button.secondary:hover { background: #3f3f46; }
+    .stats { font-size: 11px; color: #71717a; margin-top: 4px; }
+    .footer { margin-top: 10px; border-top: 1px solid #27272a; padding-top: 8px; font-size: 11px; color: #a1a1aa; display: flex; justify-content: space-between; }
+    a { color: #60a5fa; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1><span>Hmac Gen</span> <span class="badge">100% Offline</span></h1>
+  <textarea id="input" placeholder="Paste input here..."></textarea>
+  <div class="btn-row">
+    <button id="btn-run">Process</button>
+    <button id="btn-sample" class="secondary">Sample</button>
+    <button id="btn-copy" class="secondary">Copy</button>
+  </div>
+  <textarea id="output" readonly placeholder="Output appears here..."></textarea>
+  <div id="stats" class="stats">Ready</div>
+  <div class="footer">
+    <span>Zero tracking, offline</span>
+    <a href="https://cig13zs.github.io/hmac-gen/" target="_blank">Full Web App ↗</a>
+  </div>
+  <script src="core.js"></script>
+  <script>
+    const sample = "{\"event\":\"payment_intent.succeeded\",\"amount\":4900}\n===SECRET===\nwhsec_test_secret_key_88921";
+    
+const inputEl = document.getElementById('input');
+const outputEl = document.getElementById('output');
+const statsEl = document.getElementById('output-stats') || document.getElementById('stats');
+
+async function process() {
+  const parts = inputEl.value.split(/===+SECRET===+/);
+  const message = (parts[0] || '').trim();
+  const secret = (parts[1] || '').trim() || 'default_secret';
+
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
+  const hex = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  outputEl.value = hex;
+  if (statsEl) statsEl.textContent = 'Computed HMAC-SHA256 signature';
+}
+
+document.getElementById('btn-run').addEventListener('click', process);
+inputEl.addEventListener('input', process);
+document.getElementById('btn-sample').addEventListener('click', () => { inputEl.value = sample; process(); });
+document.getElementById('btn-copy').addEventListener('click', () => { navigator.clipboard.writeText(outputEl.value); alert('Copied HMAC!'); });
+if (document.getElementById('btn-clear')) document.getElementById('btn-clear').addEventListener('click', () => { inputEl.value = ''; outputEl.value = ''; });
+process();
+
+  </script>
+</body>
+</html>
