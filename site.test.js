@@ -8,6 +8,8 @@ const index = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 const readme = fs.readFileSync(path.join(__dirname, 'README.md'), 'utf8');
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'extension', 'manifest.json'), 'utf8'));
 const popup = fs.readFileSync(path.join(__dirname, 'extension', 'popup.html'), 'utf8');
+const core = fs.readFileSync(path.join(__dirname, 'core.js'), 'utf8');
+const extensionCore = fs.readFileSync(path.join(__dirname, 'extension', 'core.js'), 'utf8');
 
 assert.ok(index.includes('https://cig13zs.github.io/' + slug + '/'), 'page metadata uses this repository URL');
 assert.ok(readme.includes('github.com/cig13zs/' + slug) || readme.includes('cig13zs.github.io/' + slug), 'README points to this repository');
@@ -16,6 +18,13 @@ assert.strictEqual(findInlineScripts(popup).length, 0, 'extension popup has no i
 assert.strictEqual(findUnsafeBlankLinks(index).length, 0, 'page blank-target links use noopener');
 assert.strictEqual(findUnsafeBlankLinks(popup).length, 0, 'popup blank-target links use noopener');
 assert.ok(/aria-live=["']polite["']/.test(popup), 'popup announces result changes');
+assert.ok(/<select id="algorithm">[\s\S]*value="sha256"[\s\S]*value="sha512"/.test(index), 'page exposes both HMAC algorithms');
+assert.ok(/<select id="algorithm">[\s\S]*value="sha256"[\s\S]*value="sha512"/.test(popup), 'popup exposes both HMAC algorithms');
+assert.ok(index.includes('HMACGen.compute(message, secret, algorithmEl.value)'), 'page uses the shared HMAC core');
+assert.ok(popup.includes('src="../core.js"') || popup.includes('src="core.js"'), 'popup loads the HMAC core');
+assert.ok(!index.includes('default_secret') && !popup.includes('default_secret'), 'empty secrets have no default fallback');
+assert.ok(core.includes('subtle.importKey') && !core.includes('Web Crypto HMAC computed in UI'), 'browser core performs real Web Crypto work');
+assert.ok(extensionCore.includes('subtle.importKey') && !extensionCore.includes('Web Crypto HMAC computed in UI'), 'extension core performs real Web Crypto work');
 assert.ok(fs.existsSync(path.join(__dirname, 'LICENSE')), 'LICENSE exists');
 const manifestIconPaths = new Set([
   ...Object.values(manifest.icons || {}),

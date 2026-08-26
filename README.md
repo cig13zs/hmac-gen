@@ -48,7 +48,10 @@ Yes! The core engine in `core.js` is exported as a standard Universal Module Def
 
 ```javascript
 const engine = require('./core');
-// Use the core functions directly in your project
+(async () => {
+  const signature = await engine.compute('payload', 'secret', 'sha512');
+  console.log(signature);
+})();
 ```
 
 ---

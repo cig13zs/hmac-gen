@@ -10,6 +10,9 @@
     .badge { font-size: 10px; background: #27272a; color: #10b981; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
     textarea { width: 100%; box-sizing: border-box; height: 110px; background: #18181b; border: 1px solid #27272a; border-radius: 6px; color: #f4f4f5; padding: 8px; font-family: ui-monospace, monospace; font-size: 11px; resize: vertical; margin-bottom: 8px; }
     textarea:focus { outline: none; border-color: #3b82f6; }
+    .algorithm-control { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #a1a1aa; font-size: 11px; }
+    select { flex: 1; background: #18181b; border: 1px solid #27272a; border-radius: 5px; color: #f4f4f5; padding: 5px 8px; font-size: 11px; }
+    select:focus { outline: none; border-color: #3b82f6; }
     .btn-row { display: flex; gap: 6px; margin-bottom: 8px; }
     button { flex: 1; background: #2563eb; color: #fff; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer; }
     button:hover { background: #1d4ed8; }
@@ -25,6 +28,13 @@
 <body>
   <h1><span>Hmac Gen</span> <span class="badge">100% Offline</span></h1>
   <textarea id="input" placeholder="Paste input here..."></textarea>
+  <label class="algorithm-control" for="algorithm">
+    <span>Algorithm</span>
+    <select id="algorithm">
+      <option value="sha256">HMAC-SHA256</option>
+      <option value="sha512">HMAC-SHA512</option>
+    </select>
+  </label>
   <div class="btn-row">
     <button type="button" id="btn-run">Process</button>
     <button type="button" id="btn-sample" class="secondary">Sample</button>

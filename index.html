@@ -102,6 +102,9 @@
     button.secondary:hover { background: #3f3f46; }
     textarea { width: 100%; height: 340px; background: #09090b; border: 1px solid var(--border); border-radius: 8px; color: #f4f4f5; padding: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.5; resize: vertical; }
     textarea:focus { outline: none; border-color: var(--accent); }
+    .algorithm-control { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+    select { background: #09090b; border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 5px 8px; font-size: 12px; }
+    select:focus { outline: none; border-color: var(--accent); }
     .info-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: var(--text-muted); }
 
     .seo-content { margin-top: 30px; display: flex; flex-direction: column; gap: 20px; }
@@ -143,6 +146,13 @@
           </div>
         </div>
         <textarea id="input" placeholder="Paste input here..."></textarea>
+        <div class="algorithm-control">
+          <label for="algorithm">Algorithm</label>
+          <select id="algorithm">
+            <option value="sha256">HMAC-SHA256</option>
+            <option value="sha512">HMAC-SHA512</option>
+          </select>
+        </div>
         <div class="info-bar">
           <span id="input-stats">Ready</span>
           <button type="button" id="btn-run">Process</button>
@@ -198,27 +208,35 @@
 
 const inputEl = document.getElementById('input');
 const outputEl = document.getElementById('output');
+const algorithmEl = document.getElementById('algorithm');
 const statsEl = document.getElementById('output-stats') || document.getElementById('stats');
 
 async function process() {
   const parts = inputEl.value.split(/===+SECRET===+/);
   const message = (parts[0] || '').trim();
-  const secret = (parts[1] || '').trim() || 'default_secret';
+  const secret = (parts[1] || '').trim();
 
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
-  const hex = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-  outputEl.value = hex;
-  if (statsEl) statsEl.textContent = 'Computed HMAC-SHA256 signature';
+  try {
+    const hex = await HMACGen.compute(message, secret, algorithmEl.value);
+    const label = algorithmEl.value === 'sha512' ? 'HMAC-SHA512' : 'HMAC-SHA256';
+    outputEl.value = hex;
+    if (statsEl) statsEl.textContent = `Computed ${label} signature`;
+  } catch (error) {
+    outputEl.value = '';
+    if (statsEl) statsEl.textContent = `Error: ${error.message}`;
+  }
 }
 
 document.getElementById('btn-run').addEventListener('click', process);
 inputEl.addEventListener('input', process);
+algorithmEl.addEventListener('change', process);
 document.getElementById('btn-sample').addEventListener('click', () => { inputEl.value = sample; process(); });
 document.getElementById('btn-copy').addEventListener('click', () => { navigator.clipboard.writeText(outputEl.value); alert('Copied HMAC!'); });
-if (document.getElementById('btn-clear')) document.getElementById('btn-clear').addEventListener('click', () => { inputEl.value = ''; outputEl.value = ''; });
+if (document.getElementById('btn-clear')) document.getElementById('btn-clear').addEventListener('click', () => {
+  inputEl.value = '';
+  outputEl.value = '';
+  if (statsEl) statsEl.textContent = 'Ready';
+});
 process();
 
 
